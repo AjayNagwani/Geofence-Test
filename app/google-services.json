@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "868916688680",
+    "firebase_url": "https://geofence-service.firebaseio.com",
+    "project_id": "geofence-service",
+    "storage_bucket": "geofence-service.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:868916688680:android:7046e66245fccf91",
+        "android_client_info": {
+          "package_name": "com.test.geofenceservice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "868916688680-lt3885cclvjoobirsm94hulhrbkj6at6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAe-sFvHVTIA7p6pxdmvbuu_gs3pOhnDI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "868916688680-lt3885cclvjoobirsm94hulhrbkj6at6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
