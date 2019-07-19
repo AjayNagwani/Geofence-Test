@@ -53,7 +53,6 @@ final class Constants {
 
     static {
         BAY_AREA_LANDMARKS.put("Amrapali circle", new LatLng(26.911618, 75.743746));
-
         // Googleplex.
         BAY_AREA_LANDMARKS.put("Office",new LatLng(26.911137368989,75.73416775465));
         BAY_AREA_LANDMARKS.put("Talwarkars",new LatLng(26.9112357,75.7509412));
