@@ -2,48 +2,73 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.test.geofenceservice">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.Base">
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.Base"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".DemoSplachActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".MainActivity">
+
+        </activity>
+
         <receiver
             android:name=".GeoBroadcastReceiver"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name=".GeoBroadcastReceiver.ACTION_PROCESS_UPDATES" />
             </intent-filter>
         </receiver>
+
         <service
             android:name=".LocationMonitoringService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false"
-            tools:ignore="InnerclassSeparator"/>
+            tools:ignore="InnerclassSeparator" />
         <service
             android:name=".GeofenceTransitionsJobIntentService"
-            android:exported="true"
             android:enabled="true"
-            android:stopWithTask="false"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="false" />
+       <!-- <receiver android:process=":remote" android:name=".Alarm">
+        </receiver>
+        <service
+            android:name=".AlarmJobIntentService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:stopWithTask="false" />-->
+        <receiver android:name=".AlarmReceiver"/>
+        <receiver android:name=".AlarmBootReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

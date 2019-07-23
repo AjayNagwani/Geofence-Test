@@ -58,7 +58,7 @@ import java.util.Map;
  * the ACCESS_FINE_LOCATION permission, as specified in AndroidManifest.xml.
  * <p>
  */
-public class MainActivity extends AppCompatActivity implements OnCompleteListener<Void>,OnLocationChangedListener {
+public class MainActivity extends AppCompatActivity implements OnCompleteListener<Void>, OnLocationChangedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
         // Get the UI widgets.
         mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
-       // mRemoveGeofencesButton = (Button) findViewById(R.id.remove_geofences_button);
+        // mRemoveGeofencesButton = (Button) findViewById(R.id.remove_geofences_button);
 
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<>();
@@ -115,8 +115,11 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         // Get the geofences used. Geofence data is hard coded in this sample.
         populateGeofenceList();
         setupListeners();
-       mGeofencingClient = LocationServices.getGeofencingClient(this);
+        NotificationHelper.scheduleRepeatingRTCNotification(getApplicationContext(), "", "");
+        NotificationHelper.enableBootReceiver(getApplicationContext());
+        mGeofencingClient = LocationServices.getGeofencingClient(this);
     }
+
     private void setupListeners() {
         MyCurrentLocation myCurrentLocation = new MyCurrentLocation(this);
         myCurrentLocation.buildGoogleApiClient(this);
@@ -124,24 +127,11 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .init();
-        setButtonsEnabledState();
-        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
-            @Override
-            public void idsAvailable(String userId, String registrationId) {
-                Log.d("debug", "User:" + userId);
-                if (registrationId != null) {
-                    Log.d("debug", "registrationId:" + registrationId);
-                    StaticDataHelper.savePlayerID(getApplicationContext(),userId);
-                }
 
-            }
-        });
         if (!checkPermissions()) {
             requestPermissions();
         } else {
@@ -193,9 +183,11 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
             showSnackbar(getString(R.string.insufficient_permissions));
             return;
         }
-
+        // Alarm.setAlarm(getApplicationContext(),false);
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
                 .addOnCompleteListener(this);
+       // Alarm.setAlarm(getApplicationContext(), true);
+
     }
 
     /**
@@ -228,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
     /**
      * Runs when the result of calling {@link #addGeofences()} and/or {@link #removeGeofences()}
      * is available.
+     *
      * @param task the resulting Task, containing either a result or error.
      */
     @Override
@@ -263,7 +256,6 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
         intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-
         mGeofencePendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return mGeofencePendingIntent;
     }
@@ -428,7 +420,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
                 Log.i(TAG, "User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i(TAG, "Permission granted.");
-               performPendingGeofenceTask();
+                performPendingGeofenceTask();
             } else {
                 // Permission denied.
 

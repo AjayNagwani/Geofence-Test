@@ -55,15 +55,11 @@ final class Constants {
         BAY_AREA_LANDMARKS.put("Amrapali circle", new LatLng(26.911618, 75.743746));
         // Googleplex.
         BAY_AREA_LANDMARKS.put("Office",new LatLng(26.911137368989,75.73416775465));
+        BAY_AREA_LANDMARKS.put("Amrapali Circle",new LatLng(26.8959,75.7270));
         BAY_AREA_LANDMARKS.put("Talwarkars",new LatLng(26.9112357,75.7509412));
-        BAY_AREA_LANDMARKS.put("gbc bolzano test",new LatLng(46.4925743,11.3444179));
-        BAY_AREA_LANDMARKS.put("Twenty Test",new LatLng(46.4866881,11.3366539));
-        BAY_AREA_LANDMARKS.put("Noi Techpark Test 4",new LatLng(46.4787568,11.3321426));
-        BAY_AREA_LANDMARKS.put("Tobias Home Test",new LatLng(46.4964601,11.3488028));
-        BAY_AREA_LANDMARKS.put("Uni bozen test",new LatLng(46.4977879,11.3516086));
-        BAY_AREA_LANDMARKS.put("Museion test",new LatLng(46.4969253,11.3478758));
+        BAY_AREA_LANDMARKS.put("Patrik's Home Test",new LatLng(46.501415,11.328196));
+        BAY_AREA_LANDMARKS.put("Tobi's Home Test",new LatLng(46.4964601,11.3488028));
         BAY_AREA_LANDMARKS.put("Noi Techpark Test",new LatLng(46.4784444,11.3327442));
-        BAY_AREA_LANDMARKS.put("Noi Techpark Test 3",new LatLng(46.4785054,11.3325034));
 
     }
 }

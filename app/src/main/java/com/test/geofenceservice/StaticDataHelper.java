@@ -18,7 +18,7 @@ class StaticDataHelper {
     }
     public static String getPlayerId(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        String b = sharedpreferences.getString(PLAYERS_ID, " ");
+        String b = sharedpreferences.getString(PLAYERS_ID, null);
         return b;
     }
 }

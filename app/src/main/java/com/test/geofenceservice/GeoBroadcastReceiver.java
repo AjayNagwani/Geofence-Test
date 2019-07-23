@@ -51,14 +51,15 @@ public class GeoBroadcastReceiver extends BroadcastReceiver {
             if (action.equals(ACTION_PROCESS_UPDATES)) {
                /* Intent myIntent = new Intent(context, LocationMonitoringService.class);
                 context.startForegroundService(myIntent);*/
-                checkAndStartService(context);
+             //   checkAndStartService(context);
+             //   Alarm.setAlarm(context,true);
                 GeofenceTransitionsJobIntentService.enqueueWork(context, intent);
 
             }
 
         }
     }
-    private void checkAndStartService(Context context) {
+ /*   private void checkAndStartService(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (isMyServiceRunning(context, LocationMonitoringService.class)) {
                 context.startForegroundService(new Intent(context, LocationMonitoringService.class));
@@ -92,6 +93,6 @@ public class GeoBroadcastReceiver extends BroadcastReceiver {
         // Toast.makeText(mContext,"Service Not Running",Toast.LENGTH_SHORT).show();
 
         return true;
-    }
+    }*/
 
 }
