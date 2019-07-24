@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -17,9 +18,7 @@ import static android.content.Context.ALARM_SERVICE;
  */
 
 public class NotificationHelper {
-    public static int ALARM_TYPE_RTC = 100;
-    private static AlarmManager alarmManagerRTC;
-    private static PendingIntent alarmIntentRTC;
+    public static int ALARM_TYPE_RTC = 1000;
 
     public static void scheduleRepeatingRTCNotification(Context context, String hour, String min) {
         Calendar calendar = Calendar.getInstance();
@@ -29,12 +28,18 @@ public class NotificationHelper {
                 Integer.getInteger(min, 0));
 
         Intent intent = new Intent(context, AlarmReceiver.class);
-        alarmIntentRTC = PendingIntent.getBroadcast(context, ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent alarmIntentRTC = PendingIntent.getBroadcast(context, ALARM_TYPE_RTC, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        alarmManagerRTC = (AlarmManager)context.getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManagerRTC = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-        alarmManagerRTC.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                calendar.getTimeInMillis(), 10000, alarmIntentRTC);
+        if (alarmManagerRTC != null) {
+            Log.e("k","");
+
+            alarmManagerRTC.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(), 60 * 1000, alarmIntentRTC);
+            Log.e("k","");
+
+        }
     }
 
 

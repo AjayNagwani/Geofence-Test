@@ -198,7 +198,7 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
         model.setMessage(message);
         model.setDevice_info(object.toString());
         //model = new NotificationModel(StaticDataHelper.getDeviceIdFromPrefs(getApplicationContext()), message);
-        Call<ResponseBody> call = apiInterface1.notify(model);
+        Call<ResponseBody> call = apiInterface1.notify1(model);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

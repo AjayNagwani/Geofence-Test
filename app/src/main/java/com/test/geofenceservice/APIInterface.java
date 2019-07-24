@@ -70,6 +70,9 @@ public interface APIInterface {
     @POST("ping")
      Call<ResponseBody> notify(@Body NotificationModel model);
 
+    @POST("pinggeo")
+    Call<ResponseBody> notify1(@Body NotificationModel model);
+
     @POST("notifications")
     Call<ResponseBody> notification(@Body NotifyModel model);
 

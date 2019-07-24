@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 
     <application
         android:allowBackup="true"
@@ -42,12 +41,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name=".LocationMonitoringService"
-            android:enabled="true"
-            android:exported="true"
-            android:stopWithTask="false"
-            tools:ignore="InnerclassSeparator" />
         <service
             android:name=".GeofenceTransitionsJobIntentService"
             android:enabled="true"

@@ -49,50 +49,13 @@ public class GeoBroadcastReceiver extends BroadcastReceiver {
         if (intent != null) {
             final String action = intent.getAction();
             if (action.equals(ACTION_PROCESS_UPDATES)) {
-               /* Intent myIntent = new Intent(context, LocationMonitoringService.class);
-                context.startForegroundService(myIntent);*/
-             //   checkAndStartService(context);
-             //   Alarm.setAlarm(context,true);
+
                 GeofenceTransitionsJobIntentService.enqueueWork(context, intent);
 
             }
 
         }
     }
- /*   private void checkAndStartService(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (isMyServiceRunning(context, LocationMonitoringService.class)) {
-                context.startForegroundService(new Intent(context, LocationMonitoringService.class));
-                Log.e("Servicee", "Started");
 
-            }
-        } else {
-            if (isMyServiceRunning(context, LocationMonitoringService.class)) {
-                context.startService(new Intent(context, LocationMonitoringService.class));
-                Log.e("Servicee", "Started");
-
-
-
-            }
-        }
-    }
-    private boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                Log.i("Service status", "Running");
-
-
-                //      Toast.makeText(mContext,"Service Running",Toast.LENGTH_SHORT).show();
-
-                return false;
-            }
-        }
-        Log.i("Service status", "Not running");
-
-        // Toast.makeText(mContext,"Service Not Running",Toast.LENGTH_SHORT).show();
-
-        return true;
-    }*/
 
 }

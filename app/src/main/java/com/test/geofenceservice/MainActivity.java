@@ -58,16 +58,12 @@ import java.util.Map;
  * the ACCESS_FINE_LOCATION permission, as specified in AndroidManifest.xml.
  * <p>
  */
-public class MainActivity extends AppCompatActivity implements OnCompleteListener<Void>, OnLocationChangedListener {
+public class MainActivity extends AppCompatActivity implements OnCompleteListener<Void> {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    @Override
-    public void onLocationChanged(Location currentLocation) {
-
-    }
 
     /**
      * Tracks whether the user requested to add or remove geofences, or to do neither.
@@ -114,29 +110,22 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
         // Get the geofences used. Geofence data is hard coded in this sample.
         populateGeofenceList();
-        setupListeners();
         NotificationHelper.scheduleRepeatingRTCNotification(getApplicationContext(), "", "");
         NotificationHelper.enableBootReceiver(getApplicationContext());
         mGeofencingClient = LocationServices.getGeofencingClient(this);
     }
 
-    private void setupListeners() {
-        MyCurrentLocation myCurrentLocation = new MyCurrentLocation(this);
-        myCurrentLocation.buildGoogleApiClient(this);
-        myCurrentLocation.start();
 
-
-    }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        if (!checkPermissions()) {
+       /* if (!checkPermissions()) {
             requestPermissions();
         } else {
             performPendingGeofenceTask();
-        }
+        }*/
     }
 
     /**
