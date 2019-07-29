@@ -50,7 +50,7 @@ public class App extends Application {
                 }
             }, 7 * 1000);
         }
-        Util.scheduleJob(getApplicationContext());
+        //Util.scheduleJob(getApplicationContext());
 
     }
 

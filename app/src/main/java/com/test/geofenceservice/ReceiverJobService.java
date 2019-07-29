@@ -24,7 +24,7 @@ public class ReceiverJobService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         pingGeo("Job Rescheduled");
-        Util.scheduleJob(getApplicationContext());
+        //Util.scheduleJob(getApplicationContext());
         // reschedule the job
         return true;
     }
