@@ -17,12 +17,17 @@
 package com.test.geofenceservice;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -46,8 +51,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.onesignal.OneSignal;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Demonstrates how to create and remove geofences using the GeofencingApi. Uses an IntentService
@@ -90,8 +103,24 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
     // Buttons for kicking off the process of adding or removing geofences.
     private Button mAddGeofencesButton;
     private Button mRemoveGeofencesButton;
+    private GeoBroadcastReceiver receiver = null;
+    private static final Intent[] POWERMANAGER_INTENTS = {
+            new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")),
+            new Intent().setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity")),
+            new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")),
+            new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity")),
+            new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.startupapp.StartupAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity")),
+            new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity")),
+            new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.BgStartUpManager")),
+            new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")),
+            new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
+            new Intent().setComponent(new ComponentName("com.htc.pitroad", "com.htc.pitroad.landingpage.activity.LandingPageActivity")),
+            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity"))};
 
     private PendingGeofenceTask mPendingGeofenceTask = PendingGeofenceTask.NONE;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,12 +139,56 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
         // Get the geofences used. Geofence data is hard coded in this sample.
         populateGeofenceList();
-        NotificationHelper.scheduleRepeatingRTCNotification(getApplicationContext(), "", "");
-        NotificationHelper.enableBootReceiver(getApplicationContext());
         mGeofencingClient = LocationServices.getGeofencingClient(this);
+        if (!StaticDataHelper.getProtectedStatus(getApplicationContext())) {
+            for (final Intent intent : POWERMANAGER_INTENTS)
+                if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Enable Battery optimisation").setMessage("For proper functioning of app, allow the app to ignore battery optimisation.")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    startActivity(intent);
+                                    StaticDataHelper.setProtectedStatus(getApplicationContext(), true);
+                                    //sp.edit().putBoolean("protected",true).apply();
+
+                                }
+                            })
+                            .setCancelable(false)
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .create().show();
+                    break;
+                }
+        }
+       // regRec();
+
     }
 
+    /*private void regRec() {
+        IntentFilter intentFilter = new IntentFilter();
 
+        // Add network connectivity change action.
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        intentFilter.addAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
+        // Set broadcast receiver priority.
+        intentFilter.setPriority(100);
+
+        // Create a network change broadcast receiver.
+        if (receiver == null) {
+            receiver = new GeoBroadcastReceiver();
+
+            // Register the broadcast receiver with the intent filter object.
+            registerReceiver(receiver, intentFilter);
+            Log.e("Receiver", "Registered");
+            pingGeo("Registered");
+        }
+    }*/
 
     @Override
     public void onStart() {
@@ -132,6 +205,44 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
      * Builds and returns a GeofencingRequest. Specifies the list of geofences to be monitored.
      * Also specifies how the geofence notifications are initially triggered.
      */
+    private void pingGeo(String message) {
+        APIInterface apiInterface1 = APIClient.getClient1().create(APIInterface.class);
+        JSONObject object = new JSONObject();
+        try {
+            object.put("Manufacturer", Build.MANUFACTURER);
+            object.put("Version", Build.VERSION.RELEASE);
+            object.put("Model", Build.MODEL);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        NotificationModel model = new NotificationModel();
+        Log.e("Api", "called");
+        // model.setDevice_id(StaticDataHelper.getDeviceIdFromPrefs(getApplicationContext()));
+        model.setMessage(message);
+        model.setDevice_info(object.toString());
+        //model = new NotificationModel(StaticDataHelper.getDeviceIdFromPrefs(getApplicationContext()), message);
+        Call<ResponseBody> call = apiInterface1.notify1(model);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.e("Url", String.valueOf(call.request().url()));
+                if (response.isSuccessful()) {
+                    Log.e("Response", response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("Failure", t.getMessage());
+                call.cancel();
+            }
+
+
+        });
+
+    }
+
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
@@ -172,10 +283,10 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
             showSnackbar(getString(R.string.insufficient_permissions));
             return;
         }
-        // Alarm.setAlarm(getApplicationContext(),false);
+
         mGeofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
                 .addOnCompleteListener(this);
-       // Alarm.setAlarm(getApplicationContext(), true);
+        // Alarm.setAlarm(getApplicationContext(), true);
 
     }
 
@@ -241,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         if (mGeofencePendingIntent != null) {
             return mGeofencePendingIntent;
         }
-        Intent intent = new Intent(this, GeoBroadcastReceiver.class);
+        Intent intent = new Intent();
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
         // addGeofences() and removeGeofences().
         intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
@@ -260,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
                     // Set the request ID of the geofence. This is a string to identify this
                     // geofence.
                     .setRequestId(entry.getKey())
-
+                    .setNotificationResponsiveness(2 * 60 * 1000)
                     // Set the circular region of this geofence.
                     .setCircularRegion(
                             entry.getValue().latitude,
@@ -393,6 +504,40 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //unrRec();
+    }
+
+    /* private void unrRec() {
+         if(receiver!=null)
+         {
+             unregisterReceiver(receiver);
+             Log.d("Receiver", "onDestroy: screenOnOffReceiver is unregistered.");
+             pingGeo("Unr                        egistered");
+
+         }
+     }
+ */
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     /**

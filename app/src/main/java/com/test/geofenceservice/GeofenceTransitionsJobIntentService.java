@@ -88,7 +88,7 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
-
+        Log.e("Service","Called");
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
 
