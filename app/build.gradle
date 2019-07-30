@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:18.0.0'
     implementation 'com.firebase:geofire-android:2.3.1'
     implementation 'com.onesignal:OneSignal:3.11.1'
-
+    implementation "android.arch.work:work-runtime:1.0.0-alpha11"
 }
 
 apply plugin: 'com.google.gms.google-services'

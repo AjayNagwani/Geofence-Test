@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -37,19 +41,10 @@ public class App extends Application {
         super.onCreate();
         Log.e("Called", "onCreateApp");
 
-        if (!StaticDataHelper.getReceiverStatus(getApplicationContext())) {
-            regRec();
-        }
-        else{
-            unrRec();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    regRec();
+        final OneTimeWorkRequest periodicWorkRequest
+                = new OneTimeWorkRequest.Builder(MyWorker.class).build();
 
-                }
-            }, 7 * 1000);
-        }
+        WorkManager.getInstance().enqueue(periodicWorkRequest);
         //Util.scheduleJob(getApplicationContext());
 
     }
