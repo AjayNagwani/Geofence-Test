@@ -20,7 +20,7 @@ public interface APIInterface {
 
     @GET("api.php/")
     Call<ResponseBody> getChapsNearby(@Query("action") String action,
-                                      @Query("latitude") String latitude,
+                                      @Query("latitude") double latitude,
                                       @Query("longitude") double longitude,
                                       @Query("radius") String radius,
                                       @Query("unique_api_key") String uniqueApiKey,

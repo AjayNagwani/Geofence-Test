@@ -19,7 +19,29 @@ public class APIClient {
      APIClient() {
     }
 
+    public static Retrofit getClient() {
+        Retrofit retrofit;
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request().newBuilder().build();
+                return chain.proceed(request);
+            }
+        }).build();
 
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.chap-app.com/dashboard/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build();
+
+
+
+        return retrofit;
+    }
     public static Retrofit getClient1() {
         Retrofit retrofit;
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();

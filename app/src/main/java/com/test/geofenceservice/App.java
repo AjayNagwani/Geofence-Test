@@ -41,15 +41,11 @@ public class App extends Application {
         super.onCreate();
         Log.e("Called", "onCreateApp");
 
-        final OneTimeWorkRequest periodicWorkRequest
-                = new OneTimeWorkRequest.Builder(MyWorker.class).build();
-
-        WorkManager.getInstance().enqueue(periodicWorkRequest);
         //Util.scheduleJob(getApplicationContext());
 
     }
 
-    public void regRec() {
+   /* public void regRec() {
         IntentFilter intentFilter = new IntentFilter();
 
         // Add network connectivity change action.
@@ -70,7 +66,7 @@ public class App extends Application {
             Log.e("Receiver", "Registered");
             pingGeo("Registered");
         }
-    }
+    }*/
 
     private void pingGeo(String message) {
         APIInterface apiInterface1 = APIClient.getClient1().create(APIInterface.class);
@@ -110,7 +106,7 @@ public class App extends Application {
 
     }
 
-    public void unrRec() {
+  /*  public void unrRec() {
         if (receiver != null) {
             unregisterReceiver(receiver);
             StaticDataHelper.saveReceiverStatus(getApplicationContext(), false);
@@ -118,6 +114,6 @@ public class App extends Application {
             pingGeo("Unregistered");
 
         }
-    }
+    }*/
 
 }

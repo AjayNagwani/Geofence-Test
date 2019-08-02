@@ -59,17 +59,17 @@ public class GeoBroadcastReceiver extends BroadcastReceiver {
             final String action = intent.getAction();
             if (action.equals(ACTION_PROCESS_UPDATES)) {
                 GeofenceTransitionsJobIntentService.enqueueWork(context, intent);
-                ping("Running");
+              //  ping("Running");
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
                 Log.e("Screen","off");
-                ping("ACTION_SCREEN_OFF");
+               // ping("ACTION_SCREEN_OFF");
             } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
                 Log.e("Screen","off");
-                ping("ACTION_SCREEN_ON");
+              //  ping("ACTION_SCREEN_ON");
             }
             else if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
                 //
-                ping("Boot Completed");
+             //   ping("Boot Completed");
             }
 
         }

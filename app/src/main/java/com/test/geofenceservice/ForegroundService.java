@@ -38,16 +38,16 @@ public class ForegroundService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
     private BroadcastReceiver receiver = null;
     boolean receiverFlag = false;
-    private Timer timer;
+    private Timer timer = null;
     MyWorker worker = null;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Intent intent = new Intent(this, GeoBroadcastReceiver.class);
+       /* Intent intent = new Intent(this, GeoBroadcastReceiver.class);
         intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);*/
         Log.e("Called", "onCreateService");
         //regRec();
 
@@ -86,33 +86,49 @@ public class ForegroundService extends Service {
 
             }
         }, 15 * 1000);*/
-     /*   new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
                 if (!isMyServiceRunning(getApplicationContext(), ForegroundService.class)) {
+                    Intent intent1 = new Intent(getApplicationContext(),ForegroundService.class);
+                    getApplicationContext().stopService(intent1);
                     stopSelf();
+                    stoptimertask();
                     Log.d("ForeGround service", "Stopped at " + Calendar.getInstance().getTime());
                     pingGeo("Stopped at " + Calendar.getInstance().getTime());
-                    worker.stopService();
+                    boolean b = isMyServiceRunning(getApplicationContext(), ForegroundService.class);
+                    Log.e("Service status", String.valueOf(b));
+
                 }
             }
-        }, 60 * 1000);
-*/
+        }, 10 * 60 * 1000);
         //
 
         return START_NOT_STICKY;
     }
 
     public void startTimer() {
-        timer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                pingGeo("Running at " + Calendar.getInstance().getTime() + "  " + timer);
-            }
-        };
-        timer.schedule(timerTask, 15000, 15000); //
-
+        if(timer == null) {
+            timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                public void run() {
+                    Intent intent = new Intent(getApplicationContext(), GeoBroadcastReceiver.class);
+                    intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
+                    PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                  //  pingGeo("Running at " + Calendar.getInstance().getTime() + "  " + timer.toString());
+                }
+            };
+            timer.schedule(timerTask, 15000, 15000); //
+        }
+        else {
+            TimerTask timerTask = new TimerTask() {
+                public void run() {
+                   // pingGeo("Running at " + Calendar.getInstance().getTime() + "  " + timer.toString());
+                }
+            };
+            timer.schedule(timerTask, 15000, 15000);
+        }
 
     }
 
@@ -123,24 +139,24 @@ public class ForegroundService extends Service {
         }
     }
 
-  /*  private boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
+    private boolean isMyServiceRunning(Context context, Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
                 Log.i("Service status", "Running");
-                pingGeo(serviceClass.getName());
-                MyWorker.stopService();
+               // pingGeo(serviceClass.getName());
+                //MyWorker.stopService();
                 //      Toast.makeText(mContext,"Service Running",Toast.LENGTH_SHORT).show();
 
                 return false;
             }
         }
         Log.i("Service status", "Not running");
-        pingGeo("Not Running");
+      //  pingGeo("Not Running");
         // Toast.makeText(mContext,"Service Not Running",Toast.LENGTH_SHORT).show();
 
         return true;
-    }*/
+    }
 
     /* public void regRec() {
          IntentFilter intentFilter = new IntentFilter();
@@ -224,6 +240,7 @@ public class ForegroundService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         super.onTaskRemoved(rootIntent);
+        startTimer();
         Log.e("Called", "onTaskRemovedService");
       /*  Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
         stopService(serviceIntent);*/

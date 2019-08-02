@@ -42,15 +42,7 @@ public class MyWorker extends Worker {
             Log.e("Servicee", "Started");
 
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                     getApplicationContext().stopService(serviceIntent);
-                    pingGeo("Stopped at " + Calendar.getInstance().getTime());
 
-                }
-            }
-        , 60 * 1000);
 
         return Result.SUCCESS;
 

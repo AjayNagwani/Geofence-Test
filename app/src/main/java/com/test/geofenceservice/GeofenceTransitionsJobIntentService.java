@@ -88,6 +88,7 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
 
         // Get the transition type.
         int geofenceTransition = geofencingEvent.getGeofenceTransition();
+       // ping(String.valueOf(geofenceTransition));
         Log.e("Service","Called");
         // Test that the reported transition was of interest.
         if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ) {
@@ -98,7 +99,7 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
             // Get the transition details as a String.
             String geofenceTransitionDetails = getGeofenceTransitionDetails(geofenceTransition,
                     triggeringGeofences);
-            ping(geofenceTransitionDetails);
+            //ping(geofenceTransitionDetails);
 
             // Send notification and log the transition details.
             //sendNotification(geofenceTransitionDetails);
@@ -226,9 +227,8 @@ public class GeofenceTransitionsJobIntentService extends JobIntentService {
 
         // Get the Ids of each geofence that was triggered.
         ArrayList<String> triggeringGeofencesIdsList = new ArrayList<>();
-        for (Geofence geofence : triggeringGeofences) {
-            triggeringGeofencesIdsList.add(geofence.getRequestId());
-        }
+            triggeringGeofencesIdsList.add(triggeringGeofences.get(0).getRequestId());
+
         String triggeringGeofencesIdsString = TextUtils.join(", ",  triggeringGeofencesIdsList);
 
         //return geofenceTransitionString + ": " + triggeringGeofencesIdsString;
