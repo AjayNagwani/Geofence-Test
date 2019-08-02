@@ -36,20 +36,13 @@ import retrofit2.Response;
 
 public class ForegroundService extends Service {
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
-    private BroadcastReceiver receiver = null;
-    boolean receiverFlag = false;
     private Timer timer = null;
-    MyWorker worker = null;
-
+    int count = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
-       /* Intent intent = new Intent(this, GeoBroadcastReceiver.class);
-        intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);*/
         Log.e("Called", "onCreateService");
-        //regRec();
 
 
     }
@@ -57,7 +50,6 @@ public class ForegroundService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //String input = intent.getStringExtra("inputExtra");
         createNotificationChannel();
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
@@ -73,19 +65,7 @@ public class ForegroundService extends Service {
 
         startForeground(1, notification);
         startTimer();
-       /* final Handler handler = new Handler();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                handler.postDelayed(this, 15 * 1000);
-                Log.d("ForeGround service", "Running at " + Calendar.getInstance().getTime());
-                pingGeo("Running at " + Calendar.getInstance().getTime());
-                Intent intent = new Intent(getApplicationContext(), GeoBroadcastReceiver.class);
-                intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-                PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            }
-        }, 15 * 1000);*/
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -109,13 +89,20 @@ public class ForegroundService extends Service {
     }
 
     public void startTimer() {
+
         if(timer == null) {
+
             timer = new Timer();
             TimerTask timerTask = new TimerTask() {
                 public void run() {
-                    Intent intent = new Intent(getApplicationContext(), GeoBroadcastReceiver.class);
-                    intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-                    PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    if(count != 0){
+                        Intent intent = new Intent(getApplicationContext(), GeoBroadcastReceiver.class);
+                        intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
+                        PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
+                    count++;
+                    Log.e("Timer not null", String.valueOf(count));
+              /*    */
                   //  pingGeo("Running at " + Calendar.getInstance().getTime() + "  " + timer.toString());
                 }
             };
@@ -125,6 +112,13 @@ public class ForegroundService extends Service {
             TimerTask timerTask = new TimerTask() {
                 public void run() {
                    // pingGeo("Running at " + Calendar.getInstance().getTime() + "  " + timer.toString());
+                    if(count != 0){
+                        Intent intent = new Intent(getApplicationContext(), GeoBroadcastReceiver.class);
+                        intent.setAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
+                        PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    }
+                    count++;
+                    Log.e("Timer null", String.valueOf(count));
                 }
             };
             timer.schedule(timerTask, 15000, 15000);
@@ -158,29 +152,7 @@ public class ForegroundService extends Service {
         return true;
     }
 
-    /* public void regRec() {
-         IntentFilter intentFilter = new IntentFilter();
 
-         // Add network connectivity change action.
-         intentFilter.addAction("android.intent.action.SCREEN_ON");
-         intentFilter.addAction("android.intent.action.SCREEN_OFF");
-         intentFilter.addAction("android.intent.action.BOOT_COMPLETED");
-         intentFilter.addAction(GeoBroadcastReceiver.ACTION_PROCESS_UPDATES);
-         // Set broadcast receiver priority.
-         intentFilter.setPriority(100);
-
-         // Create a network change broadcast receiver.
-         if (receiver == null) {
-             receiver = new GeoBroadcastReceiver();
-
-             // Register the broadcast receiver with the intent filter object.
-             registerReceiver(receiver, intentFilter);
-             receiverFlag = true;
-             Log.e("Receiver", "Registered");
-             pingGeo("Registered");
-         }
-     }
- */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void cancelNotification(Context ctx, String notifyId) {
         String ns = Context.NOTIFICATION_SERVICE;
@@ -201,10 +173,8 @@ public class ForegroundService extends Service {
         }
         NotificationModel model = new NotificationModel();
         Log.e("Api", "called");
-        // model.setDevice_id(StaticDataHelper.getDeviceIdFromPrefs(getApplicationContext()));
         model.setMessage(message);
         model.setDevice_info(object.toString());
-        //model = new NotificationModel(StaticDataHelper.getDeviceIdFromPrefs(getApplicationContext()), message);
         Call<ResponseBody> call = apiInterface1.notify1(model);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -242,20 +212,10 @@ public class ForegroundService extends Service {
         super.onTaskRemoved(rootIntent);
         startTimer();
         Log.e("Called", "onTaskRemovedService");
-      /*  Intent serviceIntent = new Intent(getApplicationContext(), ForegroundService.class);
-        stopService(serviceIntent);*/
 
     }
 
-    public void unrRec() {
-        if (receiver != null) {
-            unregisterReceiver(receiver);
-            receiverFlag = false;
-            Log.d("Receiver", "onDestroy: screenOnOffReceiver is unregistered.");
-            pingGeo("Unregistered");
 
-        }
-    }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -269,12 +229,7 @@ public class ForegroundService extends Service {
             if (manager != null) {
                 manager.createNotificationChannel(serviceChannel);
             }
-           /* new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    cancelNotification(getApplicationContext(), CHANNEL_ID);
-                }
-            }, 2000);*/
+
         }
     }
 }

@@ -9,6 +9,7 @@ class StaticDataHelper {
     private static final String PLAYERS_ID = "playersId";
     private static final String PROTECTED = "protected";
     private static final String RECEIVER_STATUS ="receiversStatus" ;
+    private static final String GEOFENCE_FLAG = "geofenceFlag";
 
     public static void savePlayerID(Context context, String id) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
@@ -31,7 +32,20 @@ class StaticDataHelper {
         boolean b = sharedpreferences.getBoolean(RECEIVER_STATUS, false);
         return b;
     }
+    public static void setGeofenceFlag(Context context, boolean b) {
+        SharedPreferences sharedpreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putBoolean(GEOFENCE_FLAG, b);
+        Log.e("Geofence Flag - ", String.valueOf(b));
+        editor.apply();
 
+    }
+
+    public static boolean getGeofenceFlag(Context context) {
+        SharedPreferences sharedpreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        boolean b = sharedpreferences.getBoolean(GEOFENCE_FLAG, false);
+        return b;
+    }
     public static String getPlayerId(Context context) {
         SharedPreferences sharedpreferences = context.getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
         String b = sharedpreferences.getString(PLAYERS_ID, null);

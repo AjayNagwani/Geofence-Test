@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         setContentView(R.layout.activity_main);
 
         // Get the UI widgets.
-        mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
+       /* mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
         // mRemoveGeofencesButton = (Button) findViewById(R.id.remove_geofences_button);
 
         // Empty list for storing geofences.
@@ -151,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
         // Get the geofences used. Geofence data is hard coded in this sample.
        placeChap();
         //placeChap();
-        mGeofencingClient = LocationServices.getGeofencingClient(this);
-       /* if (!StaticDataHelper.getProtectedStatus(getApplicationContext())) {
+        mGeofencingClient = LocationServices.getGeofencingClient(this);*/
+        if (!StaticDataHelper.getProtectedStatus(getApplicationContext())) {
             for (final Intent intent : POWERMANAGER_INTENTS)
                 if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
 
@@ -176,8 +176,13 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
                             .create().show();
                     break;
                 }
-        }*/
+        }
         // regRec();
+        final PeriodicWorkRequest periodicWorkRequest =
+                new PeriodicWorkRequest.Builder(MyWorker.class, 15, TimeUnit.MINUTES)
+                        .build();
+
+        WorkManager.getInstance().enqueue(periodicWorkRequest);
 
     }
 
@@ -344,11 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnCompleteListene
 
             int messageId = getGeofencesAdded() ? R.string.geofences_added :
                     R.string.geofences_removed;
-            final PeriodicWorkRequest periodicWorkRequest =
-                    new PeriodicWorkRequest.Builder(MyWorker.class, 15, TimeUnit.MINUTES)
-                            .build();
 
-            WorkManager.getInstance().enqueue(periodicWorkRequest);
             Toast.makeText(this, getString(messageId), Toast.LENGTH_SHORT).show();
         } else {
             // Get the status code for the error and log it using a user-friendly message.
